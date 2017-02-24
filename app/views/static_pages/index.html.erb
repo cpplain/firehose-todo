@@ -1,6 +1,9 @@
 <section class="todoapp">
   <header class="header">
     <h1>todos</h1>
+    <form id="new-form">
+      <input type="text" class="new-todo" />
+    </form>
   </header>
 
   <section class="main">
@@ -12,6 +15,19 @@
 
 <script>
   $(function() {
+    $('#new-form').submit(function(event) {
+      event.preventDefault();
+      var textbox = $('.new-todo');
+      var payload = {
+        task: {
+          title: textbox.val()
+        }
+      }
+      $.post('/tasks/', payload).success(function(data) {
+        console.log('Successful HTTP Request');        
+      });
+    });
+
     // taskHtml takes a task in JSON format and produces an HTML list item
     function taskHtml(task) {
       var doneStatus = task.done ? 'checked' : '';
