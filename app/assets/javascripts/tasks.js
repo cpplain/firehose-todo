@@ -2,11 +2,11 @@ $(function() {
 
   // taskHtml reformats tasks from JSON to HTML list items
   function taskHtml(task) {
-    var doneStatus = task.done ? 'checked' : '';
-    var liElement = '<li><div class="view"><input class="toggle" type="checkbox"' +
-    'data-id="' + task.id + '"' +
-    doneStatus + ' /><label>' +
-    task.title + '</label></div></li>';
+    var checkedStatus = task.done ? 'checked' : '';
+    var liClass = task.done ? 'completed' : '';
+    var liElement = '<li id="listItem-' + task.id + '" class="' + liClass +
+    '"><div class="view"><input class="toggle" type="checkbox" data-id="' +
+    task.id + '"' + checkedStatus + ' /><label>' + task.title + '</label></div></li>';
 
     return liElement;
   }
@@ -21,6 +21,9 @@ $(function() {
       task: {
         done: doneValue
       }
+    }).success(function(data) {
+      $('#listItem-' + data.id).replaceWith(taskHtml(data));
+      $('.toggle').click(toggleTask);
     });
   }
 
@@ -48,6 +51,7 @@ $(function() {
     $.post('/tasks/', payload).success(function(data) {
       $('.todo-list').append(taskHtml(data));
       $('.toggle').click(toggleTask);
+      $('.new-todo').val('');
     });
   });
 });
